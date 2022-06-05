@@ -1,0 +1,86 @@
+; TM that on input a^m#a^n halts with a^{gcd(m,n)} over its tape.
+; Please simulate this machine over the TM simulator at [1].
+; [1] http://morphett.info/turing/turing.html
+
+; Note that this machine starts from state "preprocess" which is not the default starting state for the simulator. 
+; Please click "Advance options" on the side menu, and change the initial state to 1.
+; An example input/output: ⊢aaaa#aaaaaa / ⊢⊢⊢⊢⊢⊢⊢⊢aa
+
+; M = (
+;      {preprocess,1,2,3,4,5,6,7,8,9,10,11,12,halt,halt-reject},
+;      {a},
+;      {a,#,⊢,_,b},
+;      ⊢,
+;      _,
+;      delta (implemented below),
+;      preprocess,
+;      halt,
+;      halt-reject
+;     )
+
+
+
+; State preprocess
+preprocess ⊢ ⊢ r preprocess
+preprocess a a r preprocess
+preprocess # # r preprocess
+preprocess _ _ l 6
+preprocess * * * halt-reject
+
+; State 1:
+1 ⊢ ⊢ r 1
+1 a b r 2
+1 b b r 3
+1 # ⊢ r halt
+
+; State 2:
+2 a a r 2
+2 # # r 4
+
+; State 3:
+3 a b r 2
+3 b b r 3
+3 # # r 7
+
+; State 4:
+4 a b r 5
+4 b b r 4
+4 _ _ l 11
+
+; State 5:
+5 a a r 5
+5 _ _ l 6
+
+; State 6:
+6 a a l 6
+6 b b l 6
+6 # # l 6
+6 ⊢ ⊢ r 1
+
+; State 7:
+7 b b r 7
+7 a a r 7
+7 # # r 7
+7 _ _ l 8
+
+; State 8:
+8 a a l 8
+8 b # l 9
+8 # # l 6
+
+; State 9
+9 b a l 9
+9 # a l 10
+9 ⊢ ⊢ r 1
+
+; State 10
+10 b ⊢ l 10
+10 ⊢ ⊢ r 1
+
+; State 11
+11 b _ l 11
+11 # a l 12
+
+; State 12
+12 a a l 12
+12 b # l 9

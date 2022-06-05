@@ -1,0 +1,57 @@
+; TM that counts (in binary) the length of a given string over the alphabet {a,b}.  
+; Please simulate this machine over the TM simulator at [1]. 
+; [1] http://morphett.info/turing/turing.html
+
+; Note that this machine starts from state 1 which is not the default starting state for the simulator. 
+; Please click "Advance options" on the side menu, and change the initial state to 1.
+; An initial input (must appear over the tape): ⊢aaaaabbbb#0
+
+; M = (
+;      {1,2,3,inc,overflow,zeros,halt-accept,halt-reject},
+;      {a,b},
+;      {a,b,#,⊢,_},
+;      ⊢,
+;      _,
+;      delta (implemented below),
+;      1,
+;      halt,
+;      halt-reject
+;     )
+
+
+; State transition delta
+; State 1: 
+1 ⊢ ⊢ r 1
+1 a ⊢ r 2
+1 b ⊢ r 2
+1 # # l halt-accept
+1 * * * halt-reject
+
+; State 2:
+2 a a r 2
+2 b b r 2
+2 # # r 2
+2 0 0 r 2
+2 1 1 r 2
+2 _ _ l inc
+2 * * * halt-reject
+
+; State inc:
+inc 0 1 l 3
+inc 1 0 l inc
+inc # # r overflow
+
+; State overflow:
+overflow 0 1 r zeros
+
+; State zeros:
+zeros 0 0 r zeros
+zeros _ 0 l 3
+
+; State 3
+3 a a l 3
+3 b b l 3
+3 0 0 l 3
+3 1 1 l 3
+3 # # l 3
+3 ⊢ ⊢ r 1

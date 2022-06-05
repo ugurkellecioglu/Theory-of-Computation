@@ -1,0 +1,64 @@
+
+; TM that recognizes strings of the form "w#w" such that w is a string over the alphabet {a,b} 
+; Please simulate this machine over the TM simulator at [1].
+; [1] http://morphett.info/turing/turing.html
+
+; Note that this machine starts from state 1 which is not the default starting state for the simulator. 
+; Please click "Advance options" on the side menu, and change the initial state to 1.
+; An accepted initial input (must appear over the tape): ⊢aaabbaaa#aaabbaaa
+; A rejected initial input (must appear over the tape): ⊢aab#aa
+
+
+; M = (
+;      {1,2,3,4,5,6,7,halt-accept,halt-reject},
+;      {a,b},
+;      {a,b,⊢,#,_,x},
+;      ⊢,
+;      _,
+;      delta (implemented below),
+;      1,
+;      halt-accept,
+;      halt-reject
+;     )
+
+
+; State 1:
+1 ⊢ ⊢ r 1
+1 a ⊢ r 2
+1 b ⊢ r 3
+1 # # r 7
+1 * * * halt-reject
+
+; State 2:
+2 a a r 2
+2 b b r 2
+2 # # r 4
+2 * * * halt-reject
+
+; State 3
+3 a a r 3
+3 b b r 3
+3 # # r 5
+3 * * * halt-reject
+
+; State 4:
+4 a x l 6
+4 x x r 4
+4 * * * halt-reject
+
+; State 5:
+5 b x l 6
+5 x x r 5 
+5 * * * halt-reject
+
+; State 6:
+6 a a l 6
+6 b b l 6
+6 # # l 6
+6 x x l 6
+6 ⊢ ⊢ r 1
+
+; State 7:
+7 x x r 7
+7 _ * * halt-accept
+7 * * * halt-reject

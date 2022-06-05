@@ -1,0 +1,54 @@
+; TM that recognizes some number of 'a's followed by the same number of 'b' which are yet followed by the same number of 'c's.  
+; Please simulate this machine over the TM simulator at [1].
+; [1] http://morphett.info/turing/turing.html
+
+; Note that this machine starts from state 1 which is not the default starting state for the simulator. 
+; Please click "Advance options" on the side menu, and change the initial state to 1.
+; An accepted initial input (must appear over the tape): ⊢aaabbbccc
+; A rejected initial input (must appear over the tape): ⊢aaaabbbbccc
+
+
+; M = (
+;      {1,2,3,4,5,halt-accept,halt-reject},
+;      {a,b,c},
+;      {a,b,c,⊢,_,X,x},
+;      ⊢,
+;      _,
+;      delta (implemented below),
+;      1,
+;      halt-accept,
+;      halt-reject
+;     )
+
+
+1 ⊢ ⊢ r 1
+1 a ⊢ r 2
+1 X X r 5
+1 _ * * halt-accept
+1 * * * halt-reject
+
+2 a a r 2
+2 b X r 3
+2 X X r 2
+2 * * * halt-reject
+
+3 b b r 3
+3 c x l 4
+3 x x r 3
+3 * * * halt-reject
+
+4 a a l 4
+4 b b l 4
+4 c c l 4
+4 x x l 4
+4 X X l 4
+4 ⊢ ⊢ r 1
+4 * * * halt-reject
+
+5 x x r 5
+5 X X r 5
+5 _ * * halt-accept
+5 * * * halt-reject
+
+ 
+

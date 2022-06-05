@@ -1,0 +1,58 @@
+
+; TM that recognizes palindrome strings over the alphabet {a,b} 
+; Please simulate this machine over the TM simulator at [1].
+; [1] http://morphett.info/turing/turing.html
+
+; Note that this machine starts from state 1 which is not the default starting state for the simulator. 
+; Please click "Advance options" on the side menu, and change the initial state to 1.
+; An accepted initial input (must appear over the tape): ⊢aaabbaaa
+; A rejected initial input (must appear over the tape): ⊢aabbaaa
+
+
+; M = (
+;      {1,2,3,4,5,6,halt-accept,halt-reject},
+;      {a,b},
+;      {a,b,⊢,_,},
+;      ⊢,
+;      _,
+;      delta (implemented below),
+;      1,
+;      halt-accept,
+;      halt-reject
+;     )
+
+
+; State 1
+1 ⊢ ⊢ r 1
+1 a ⊢ r 2
+1 b ⊢ r 3
+1 _ * * halt-accept
+1 * * * halt-reject
+
+; State 2
+2 a a r 2
+2 b b r 2
+2 _ _ l 4
+2 * * * halt-reject
+
+; State 3
+3 a a r 3
+3 b b r 3
+3 _ _ l 5
+3 * * * halt-reject
+
+; State 4
+4 a _ l 6
+4 ⊢ * * halt-accept
+4 b * * halt-reject
+
+; State 5
+5 b _ l 6
+5 ⊢ * * halt-accept
+5 a * * halt-reject
+
+; State 6
+6 a a l 6
+6 b b l 6
+6 ⊢ ⊢ r 1
+

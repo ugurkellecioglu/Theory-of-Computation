@@ -1,0 +1,44 @@
+
+; TM that recognizes the set of strings   { 0^{2^n} | n > 0 or n = 0 } over the alphabet {0} 
+; Please simulate this machine over the TM simulator at [1].
+; [1] http://morphett.info/turing/turing.html
+
+; Note that this machine starts from state 1 which is not the default starting state for the simulator. 
+; Please click "Advance options" on the side menu, and change the initial state to 1.
+; An accepted initial input (must appear over the tape): ⊢aaaaaaaa
+; A rejected initial input (must appear over the tape): ⊢aaaaa
+
+
+; M = (
+;      {1,2,3,4,5,halt-accept,halt-reject},
+;      {0},
+;      {0,⊢,_,x},
+;      ⊢,
+;      _,
+;      delta (implemented below),
+;      1,
+;      halt-accept,
+;      halt-reject
+;     )
+
+1 ⊢ ⊢ r 1
+1 0 ⊢ r 2
+1 * * * halt-reject
+
+2 0 x r 3
+2 x x r 2
+2 _ * * halt-accept
+2 * * * halt-reject
+
+3 0 0 r 4
+3 x x r 3
+3 _ _ l 5
+3 * * * halt-reject
+
+4 0 x r 3
+4 x x r 4
+4 * * * halt-reject
+
+5 0 0 l 5
+5 x x l 5
+5 ⊢ ⊢ r 2
